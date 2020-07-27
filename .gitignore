@@ -1,0 +1,7 @@
+*.pyc
+*.pth
+*.jpg
+
+check_points/
+__pycache__/
+all_images/
