@@ -29,9 +29,9 @@ lr = 1e-4
 # saved_weight_dir = './check_points/weights_unet_7415_1.pth'
 # saved_weight_dir2 = './check_points/weights_unet_7415_2.pth'
 
-train_csv = './csv/100.csv'
-saved_weight_dir = './check_points/weights_100_1.pth'
-saved_weight_dir2 = './check_points/weights_100_2.pth'
+train_csv = './csv/100_2.csv'
+saved_weight_dir = './check_points/weights_100_2_1.pth'
+saved_weight_dir2 = './check_points/weights_100_2_2.pth'
 
 
 

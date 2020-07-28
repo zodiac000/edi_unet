@@ -21,19 +21,14 @@ def my_eval():
     file_to_read = './csv/all/all.csv'
     file_to_write = "./csv/all/pred_all.csv"
 
-
-    # file_to_read = './csv/pass_valid_tail_1000.csv'
-    # file_to_write = "./csv/pred_pass_valid_tail_1000.csv"
-
-
     # file_to_read = './csv/fusion_927.csv'
     # file_to_write = './csv/fusion_927_pred.csv'
 
 
     # saved_weights = './check_points/weights_unet_200_1_cascade_2_1.pth'
     # saved_weights2 = './check_points/weights_unet_200_1_cascade_2_2.pth'
-    saved_weights = './check_points/weights_100_1.pth'
-    saved_weights2 = './check_points/weights_100_2.pth'
+    saved_weights = './check_points/weights_100_1_1.pth'
+    saved_weights2 = './check_points/weights_100_1_2.pth'
 
     batch_size = 40
 

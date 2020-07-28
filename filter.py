@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from pdb import set_trace
 
-matplotlib.use('tkagg')
+# matplotlib.use('tkagg')
 
 
 titleTxt = """
@@ -37,7 +37,7 @@ with open(file_crop, 'r') as f:
 
 total = len(lst_cutout)
 
-threshold_cutout = 0.1
+threshold_cutout = 0.03
 threshold_crop = 0.9
 
 mask_1 = lst_cutout[:,5].astype(float) <= threshold_cutout

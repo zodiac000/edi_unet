@@ -28,8 +28,8 @@ invalid_batch_size = batch_size
 # train_csv = './csv/200_1.csv'
 # dir_weight = 'check_points/weights_crop_200_1.pth'
 
-train_csv = 'csv/100.csv'
-dir_weight = 'check_points/weights_crop_100.pth'
+train_csv = 'csv/100_1.csv'
+dir_weight = 'check_points/weights_crop_100_1.pth'
 
 discriminator = Discriminator().cuda()
 # load_weights = './check_points/weights_crop_7415_1.pth'
