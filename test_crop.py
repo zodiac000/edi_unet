@@ -21,7 +21,15 @@ def eval_prediction():
     batch_size = 100
     file_to_read = './csv/all/pred_all.csv'
     file_to_write = './csv/eval/eval_crop.csv'
-    dir_weight = 'check_points/weights_crop_100.pth'
+
+
+
+    # file_to_read = './csv/fusion_927_pred.csv'
+    # file_to_write = './csv/eval/eval_crop_927.csv'
+
+
+
+    dir_weight = 'check_points/weights_crop_train_discriminator_10.pth'
     dataset = CropDataset_pred(csv_file=file_to_read)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
     discriminator = Discriminator().cuda()

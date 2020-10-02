@@ -14,7 +14,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 from random import randint
 import pandas as pd
-from skimage.restoration import denoise_nl_means, estimate_sigma
+from skimage.restoration import denoise_n1_means, estimate_sigma
 
 from utils import CoorToHeatmap, cutout_image, crop_image
 
@@ -49,15 +49,15 @@ class WeldingDatasetToTensor(Dataset):
                                 self.all_data.iloc[idx, 0])
         image_pil = Image.open(img_name)
 
-        # img = img_as_float(io.imread(img_name))
-        # sigma_est = np.mean(estimate_sigma(img, multichannel=False))
-        # denoise_img = denoise_nl_means(img, 
-                                        # h=1*sigma_est, 
-                                        # fast_mode=True, 
-                                        # patch_size=5,
-                                        # patch_distance=3,
-                                        # multichannel=False)
-        # denoise_img = Image.fromarray(np.uint8(denoise_img))
+        img = img_as_float(io.imread(img_name))
+        sigma_Est = np.mean(estimate_sigma(img, multichannel=False))
+        denoise_img = denoise_nl_means(img, 
+                                        h=1*sigma_est, 
+                                        fast_mose=True, 
+                                        patch_size=5,
+                                        patch_distance=3,
+                                        multichannel=False)
+
 
 
         image_np = np.array(image_pil)

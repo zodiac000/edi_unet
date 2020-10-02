@@ -11,7 +11,7 @@ from random import random
 
 from pdb import set_trace
 
-def draw_hmap(x_gt, y_gt, shape=224, map_type=0):
+def draw_hmap(x_gt, y_gt, shape=224, map_type=2):
     mask = np.zeros((shape, shape))
     if x_gt > shape or y_gt > shape:
         print('invalid coordinates labels ---- {}, {}'.format(x_gt, y_gt))
@@ -118,7 +118,7 @@ class CoorToHeatmap(object):
         coor = coor * [self.output_size / w, self.output_size / h]
         coor = np.round(coor)
         
-        hmap = draw_hmap(coor[0], coor[1], shape=self.output_size, map_type=0)
+        hmap = draw_hmap(coor[0], coor[1], shape=self.output_size)
 
         return hmap 
 

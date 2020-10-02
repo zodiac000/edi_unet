@@ -18,19 +18,15 @@ from tqdm import tqdm
 def my_eval():
     ########################################    Transformed Dataset
 
-    # file_to_read = './csv/all/all.csv'
-    # file_to_write = "./csv/all/pred_all.csv"
+    file_to_read = './csv/all/all.csv'
+    file_to_write = "./csv/all/pred_all.csv"
 
 
-    # file_to_read = './csv/pass_valid_tail_1000.csv'
-    # file_to_write = "./csv/pred_pass_valid_tail_1000.csv"
+    # file_to_read = './csv/fusion_927.csv'
+    # file_to_write = './csv/fusion_927_pred.csv'
 
 
-    file_to_read = './csv/fusion_label_valid_927.csv'
-    file_to_write = './csv/fusion_label_valid_927_pred.csv'
-
-
-    saved_weights = './check_points/weights_unet_5.pth'
+    saved_weights = './check_points/weights_unet_10_3.pth'
     # saved_weights = './check_points/weights_7415.pth'
 
     batch_size = 40

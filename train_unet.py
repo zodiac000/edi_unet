@@ -41,11 +41,11 @@ def split_dataset(data_set, split_at, order=None):
 num_epochs = 30000
 batch_size = 20
 lr = 1e-4
+name = '10_3'
 
-saved_weight_dir = './check_points/weights_unet_200.pth'
-
-train_csv = './csv/pass_label_valid_200.csv'
-validation_csv = './csv/fusion_label_valid_927.csv'
+saved_weight_dir = './check_points/weights_unet_' + name + '.pth'
+train_csv = './csv/' + name + '.csv'
+validation_csv = './csv/fusion_927.csv'
 
 model = UNet().cuda()
 
@@ -60,6 +60,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 def train():
     max_total_acc_x = 0
     max_euclidean_distance = 99999
+    counter = 0
     for epoch in range(num_epochs):
         for batch_index, sample_batched in enumerate(train_loader):
 
@@ -77,58 +78,58 @@ def train():
             optimizer.step()
             
 
-            if (batch_index+1) % 5 == 0:    # every 20 mini-batches...
+            if (batch_index+1) % 1 == 0:    # every 20 mini-batches...
                 print('Train batch/epoch: {}/{}\tLoss: {:.30f}'.format(
                         batch_index+1,
                         epoch,
                         torch.mean(loss).item())) #/ len(inputs)))
+                counter += 1
+
+                if (counter+1) % 5 == 0:    # every 20 mini-batches...
+                    with torch.no_grad():
+                        valid_loss = 0
+                        total_acc_x = 0
+                        total_acc_y = 0
+                        e_distance = 0
+                        distances = []
+                        for i, batch in enumerate(valid_loader):
+                            inputs = batch['image'].float().cuda()
+                            labels = batch['hmap'].float().cuda()
+                            coors_bc = batch['coor_1'].cpu().detach().numpy()
+                            img_names = batch['img_name']
+
+                            outputs = model(inputs)
 
 
-            if (batch_index+1) % 50 == 0:    # every 20 mini-batches...
-                with torch.no_grad():
-                    valid_loss = 0
-                    total_acc_x = 0
-                    total_acc_y = 0
-                    e_distance = 0
-                    distances = []
-                    for i, batch in enumerate(valid_loader):
-                        inputs = batch['image'].float().cuda()
-                        labels = batch['hmap'].float().cuda()
-                        coors_bc = batch['coor_1'].cpu().detach().numpy()
-                        img_names = batch['img_name']
+                            loss = criterion(outputs, labels)
 
-                        outputs = model(inputs)
+                            outputs = outputs.cpu().detach().numpy()
+                            labels = labels.cpu().detach().numpy()
+                            
+                            sum_acc_x, sum_acc_y, _, _ = accuracy_sum(outputs, coors_bc)
+                            total_acc_x += sum_acc_x
+                            total_acc_y += sum_acc_y
 
+                            for index, out in enumerate(outputs):
+                                coor_pred = np.array(heatmap_to_coor(out.squeeze()))
+                                coor_pred = (coor_pred * [1280/224, 1024/224]).astype(int)
+                                dist = np.sum((coor_pred - coors_bc[index]) ** 2) ** 0.5
+                                distances.append(dist)
 
-                        loss = criterion(outputs, labels)
-
-                        outputs = outputs.cpu().detach().numpy()
-                        labels = labels.cpu().detach().numpy()
-                        
-                        sum_acc_x, sum_acc_y, _, _ = accuracy_sum(outputs, coors_bc)
-                        total_acc_x += sum_acc_x
-                        total_acc_y += sum_acc_y
-
-                        for index, out in enumerate(outputs):
-                            coor_pred = np.array(heatmap_to_coor(out.squeeze()))
-                            coor_pred = (coor_pred * [1280/224, 1024/224]).astype(int)
-                            dist = np.sum((coor_pred - coors_bc[index]) ** 2) ** 0.5
-                            distances.append(dist)
-
-                    distances = np.array(distances)
-                    valid_loss = valid_loss / len(valid_loader)
-                    print('Valid loss {}'.format(valid_loss))
+                        distances = np.array(distances)
+                        valid_loss = valid_loss / len(valid_loader)
+                        print('Valid loss {}'.format(valid_loss))
 
 
-                    print("=" * 30)
-                    print("total acc_x = {:.10f}".format(total_acc_x/len(valid_loader.dataset)))
-                    print("total acc_y = {:.10f}".format(total_acc_y/len(valid_loader.dataset)))
-                    print("Euclidean Distance: {}".format(np.mean(distances)))
-                    print("=" * 30)
-                
-                    if np.mean(distances) < max_euclidean_distance:
-                        max_euclidean_distance = np.mean(distances)
-                        torch.save(model.state_dict(), saved_weight_dir)
-                        print('model saved to ' + saved_weight_dir)
+                        print("=" * 30)
+                        print("total acc_x = {:.10f}".format(total_acc_x/len(valid_loader.dataset)))
+                        print("total acc_y = {:.10f}".format(total_acc_y/len(valid_loader.dataset)))
+                        print("Euclidean Distance: {}".format(np.mean(distances)))
+                        print("=" * 30)
+                    
+                        if np.mean(distances) < max_euclidean_distance:
+                            max_euclidean_distance = np.mean(distances)
+                            torch.save(model.state_dict(), saved_weight_dir)
+                            print('model saved to ' + saved_weight_dir)
                     
 train()

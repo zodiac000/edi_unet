@@ -21,7 +21,7 @@ from pdb import set_trace
 training_number = 200
 num_epochs = 1000000
 dist_lower_bound = 4.0
-batch_size = 4
+batch_size = 2
 invalid_batch_size = batch_size
 lr = 1e-5
 invalid_csv = None
@@ -32,9 +32,9 @@ invalid_csv = None
 # dir_weight = 'check_points/weights_cutout_7415.pth'
 # invalid_dataset = InvalidDataset(csv_file=invalid_csv)
 # invalid_loader = DataLoader(invalid_dataset, batch_size=invalid_batch_size, shuffle=True)
-
-train_csv = './csv/100.csv'
-dir_weight = 'check_points/weights_cutout_100.pth'
+name = 'train_discriminator_10'
+train_csv = './csv/' + name + '.csv'
+dir_weight = 'check_points/weights_cutout_' + name + '.pth'
 
 
 discriminator = Discriminator().cuda()
@@ -56,10 +56,12 @@ solver = torch.optim.Adam(discriminator.parameters(), lr=lr)
 def train():
     batch_index = 0
     correct_rate = 0
+    counter = 0
     loss_min = 999
     for epoch in range(num_epochs):
         valid_threshold = 0.9
         for i, batch_data in enumerate(train_loader):
+            counter += 1
             correct = 0
             total = 0
             discriminator.zero_grad()
@@ -149,9 +151,9 @@ def train():
 
             batch_index += 1
 
-            if (batch_index) % 10 == 0:    # every 20 mini-batches...
+            if (counter) % 10 == 0:    # every 20 mini-batches...
                 print('Train batch {}:\tD_loss: {:.10f} acc_training_D: {:.3f}%  {}/{}'.format(
-                        batch_index,
+                        counter,
                         loss.item(),
                         100 * correct / total,
                         correct,

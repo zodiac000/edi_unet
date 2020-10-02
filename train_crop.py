@@ -27,9 +27,9 @@ invalid_batch_size = batch_size
 
 # train_csv = './csv/200_1.csv'
 # dir_weight = 'check_points/weights_crop_200_1.pth'
-
-train_csv = 'csv/100_1.csv'
-dir_weight = 'check_points/weights_crop_100_1.pth'
+name = 'train_discriminator_10'
+train_csv = 'csv/' + name + '.csv'
+dir_weight = 'check_points/weights_crop_' + name + '.pth'
 
 discriminator = Discriminator().cuda()
 # load_weights = './check_points/weights_crop_7415_1.pth'
@@ -53,10 +53,12 @@ solver = torch.optim.Adam(discriminator.parameters(), lr=lr)
 
 def train():
     correct_rate = 0
-    max_e_distance = 9999
     batch_index = 0
+    loss_min = 999
+    counter = 0
     for epoch in range(num_epochs):
         for i, batch_data in enumerate(train_loader):
+            counter += 1
             correct = 0
             total = 0
             discriminator.zero_grad()
@@ -108,18 +110,19 @@ def train():
             # pbar.update()
             batch_index += 1
 
-            if (batch_index) % 100 == 0:    # every 20 mini-batches...
+            if (counter) % 10 == 0:    # every 20 mini-batches...
                 print('Train batch {}:\tD_loss: {:.10f} acc_training_D: {:.3f}%  {}/{}'.format(
-                        batch_index,
+                        counter,
                         # G_loss.item(),
                         loss.item(),
                         100 * correct / total,
                         correct,
                         total))
 
-
-                torch.save(discriminator.state_dict(), dir_weight)
-                print('model saved to ' + dir_weight)
+                if loss.item() < loss_min:
+                    loss_min = loss.item()
+                    torch.save(discriminator.state_dict(), dir_weight)
+                    print('model saved to ' + dir_weight)
 
         # if (epoch+1) % 5 == 0:    # every 20 mini-batches...
             # eval_cutout_cls()

@@ -16,19 +16,21 @@ from tqdm import tqdm
 
 
 def my_eval():
+    name = 'train_5_2'
     ########################################    Transformed Dataset
 
-    file_to_read = './csv/all/all.csv'
+    # file_to_read = './csv/all/all.csv'
+    # file_to_write = "./csv/all/pred_all.csv"
+
+    file_to_read = './csv/all/all-927.csv'
     file_to_write = "./csv/all/pred_all.csv"
 
     # file_to_read = './csv/fusion_927.csv'
     # file_to_write = './csv/fusion_927_pred.csv'
 
 
-    # saved_weights = './check_points/weights_unet_200_1_cascade_2_1.pth'
-    # saved_weights2 = './check_points/weights_unet_200_1_cascade_2_2.pth'
-    saved_weights = './check_points/weights_100_1_1.pth'
-    saved_weights2 = './check_points/weights_100_1_2.pth'
+    saved_weights = './check_points/weights_' + name + '_1.pth'
+    saved_weights2 = './check_points/weights_' + name + '_2.pth'
 
     batch_size = 40
 

@@ -19,14 +19,21 @@ import matplotlib.pyplot as plt
 from pdb import set_trace
 
 import matplotlib
-matplotlib.use('tkagg')
+#matplotlib.use('tkagg')
 
 #Test on predictions
 def eval_prediction():
     batch_size = 120
+    
     file_to_read = './csv/all/pred_all.csv'
     file_to_write = './csv/eval/eval_cutout.csv'
-    dir_weight = 'check_points/weights_cutout_100.pth'
+
+
+    # file_to_read = './csv/fusion_927_pred.csv'
+    # file_to_write = './csv/eval/eval_cutout_927.csv'
+
+
+    dir_weight = 'check_points/weights_cutout_train_discriminator_10.pth'
 
 
     dataset = CutoutDataset_pred(csv_file=file_to_read)
