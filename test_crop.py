@@ -19,17 +19,14 @@ from pdb import set_trace
 #Test on predictions
 def eval_prediction():
     batch_size = 100
-    file_to_read = './csv/all/pred_all.csv'
-    file_to_write = './csv/eval/eval_crop.csv'
+    semi = '_2'
+    train_gen = '7000' + semi
+    train_dis = '7000'
 
+    file_to_read = './csv/all/pred/pred_88231_' + train_gen + '.csv'
+    file_to_write = './csv/eval/eval_crop_' + train_dis + semi + '.csv'
+    dir_weight = 'check_points/weights_crop_' + train_dis + '.pth'
 
-
-    # file_to_read = './csv/fusion_927_pred.csv'
-    # file_to_write = './csv/eval/eval_crop_927.csv'
-
-
-
-    dir_weight = 'check_points/weights_crop_train_discriminator_10.pth'
     dataset = CropDataset_pred(csv_file=file_to_read)
     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
     discriminator = Discriminator().cuda()

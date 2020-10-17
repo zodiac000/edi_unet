@@ -22,26 +22,16 @@ from pdb import set_trace
 num_epochs = 30000
 batch_size = 10
 lr = 1e-4
-name = 'train_5_2'
 
+train = '7000_3'
+valid = '415'
+directory = ''
 
+train_csv = './csv/' + directory + '/' + train + '.csv'
+saved_weight_dir = './check_points/weights_' + train + '_1.pth'
+saved_weight_dir2 = './check_points/weights_' + train + '_2.pth'
 
-# train_csv = './csv/pass_label_valid_7415.csv'
-# saved_weight_dir = './check_points/weights_unet_7415_1.pth'
-# saved_weight_dir2 = './check_points/weights_unet_7415_2.pth'
-
-# train_csv = './csv/100_3.csv'
-# saved_weight_dir = './check_points/weights_100_3_1.pth'
-# saved_weight_dir2 = './check_points/weights_100_3_2.pth'
-
-
-train_csv = './csv/train_validation_5/' + name + '.csv'
-saved_weight_dir = './check_points/weights_' + name + '_1.pth'
-saved_weight_dir2 = './check_points/weights_' + name + '_2.pth'
-
-# validation_csv = './csv/fusion_927.csv'
-validation_csv = './csv/train_validation_5/validation_5.csv'
-
+validation_csv = './csv/' + directory + '/' + valid + '.csv'
 
 model = UNet().cuda()
 model2 = UNet().cuda()
@@ -59,6 +49,7 @@ optimizer2 = torch.optim.Adam(model2.parameters(), lr=lr)
 def train():
     max_total_acc_x = 0
     max_euclidean_distance = 99999
+    min_loss = 99999
     counter = 0
     for epoch in range(num_epochs):
         for batch_index, sample_batched in enumerate(train_loader):
@@ -104,6 +95,16 @@ def train():
                         counter,
                         epoch,
                         torch.mean(loss).item())) #/ len(inputs)))
+
+
+                # if torch.mean(loss).item() < min_loss:
+                    # min_loss = torch.mean(loss).item()
+                    # torch.save(model.state_dict(), saved_weight_dir)
+                    # print('model saved to ' + saved_weight_dir)
+                    # torch.save(model2.state_dict(), saved_weight_dir2)
+                    # print('model2 saved to ' + saved_weight_dir2)
+
+
 
 
         # if (batch_index+1) % 50 == 0:    # every 20 mini-batches...

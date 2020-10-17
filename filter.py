@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from pdb import set_trace
 
-matplotlib.use('tkagg')
+# matplotlib.use('tkagg')
 
 
 titleTxt = """
@@ -21,9 +21,9 @@ Number of Total Predictions: {}
 def mean_dist(l1, l2):
     return np.mean(np.sum((l1 - l2) ** 2, axis=1) ** 0.5)
 
-
-file_cutout = 'csv/eval/eval_cutout.csv'
-file_crop = 'csv/eval/eval_crop.csv'
+name = '7000_2'
+file_cutout = 'csv/eval/eval_cutout_' + name + '.csv'
+file_crop = 'csv/eval/eval_crop_' + name + '.csv'
 file_output = 'csv/eval/evaluation_all.csv'
 
 # file_cutout = 'csv/eval/super_200/eval_cutout_927.csv'
@@ -42,7 +42,8 @@ total = len(lst_cutout)
 
 threshold_cutout = 1
 threshold_crop = 0
-threshold_cutout = 0.01
+# threshold_cutout = 0.45825
+threshold_cutout = 0.1
 threshold_crop = 0.99
 
 mask_1 = lst_cutout[:,5].astype(float) <= threshold_cutout

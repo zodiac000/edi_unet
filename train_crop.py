@@ -20,15 +20,16 @@ from pdb import set_trace
 
 
 lr = 1e-5
-training_number = 200
+training_number = 180
 num_epochs = 1000000
 batch_size = 10
 invalid_batch_size = batch_size
 
 # train_csv = './csv/200_1.csv'
 # dir_weight = 'check_points/weights_crop_200_1.pth'
-name = 'train_discriminator_10'
-train_csv = 'csv/' + name + '.csv'
+name = '7000'
+directory = ''
+train_csv = 'csv/' + directory + '/' + name + '.csv'
 dir_weight = 'check_points/weights_crop_' + name + '.pth'
 
 discriminator = Discriminator().cuda()
