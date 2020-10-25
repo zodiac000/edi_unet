@@ -32,8 +32,8 @@ invalid_csv = None
 # dir_weight = 'check_points/weights_cutout_7415.pth'
 # invalid_dataset = InvalidDataset(csv_file=invalid_csv)
 # invalid_loader = DataLoader(invalid_dataset, batch_size=invalid_batch_size, shuffle=True)
-name = '7000'
-directory = ''
+name = '15d'
+directory = '15d'
 train_csv = './csv/' + directory + '/' + name + '.csv'
 dir_weight = 'check_points/weights_cutout_' + name + '.pth'
 

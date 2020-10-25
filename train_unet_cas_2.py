@@ -20,12 +20,14 @@ from test_unet import my_eval
 from pdb import set_trace
 
 num_epochs = 30000
-batch_size = 10
+num_epochs = 4
+batch_size = 24
 lr = 1e-4
 
-train = '7000_3'
-valid = '415'
-directory = ''
+train = '10d_7'
+valid = '5d'
+
+directory = '15d'
 
 train_csv = './csv/' + directory + '/' + train + '.csv'
 saved_weight_dir = './check_points/weights_' + train + '_1.pth'
@@ -85,7 +87,6 @@ def train():
             optimizer2.zero_grad()
             outputs_crop = model2(stacked_crop_image.cuda())
             loss = criterion2(outputs_crop.float(), stacked_crop_hmap.cuda().float())
-
             loss.backward()
             optimizer2.step()
 
@@ -96,9 +97,8 @@ def train():
                         epoch,
                         torch.mean(loss).item())) #/ len(inputs)))
 
-
-                # if torch.mean(loss).item() < min_loss:
-                    # min_loss = torch.mean(loss).item()
+                # if loss.item() < min_loss:
+                    # min_loss = loss.item()
                     # torch.save(model.state_dict(), saved_weight_dir)
                     # print('model saved to ' + saved_weight_dir)
                     # torch.save(model2.state_dict(), saved_weight_dir2)
@@ -107,8 +107,8 @@ def train():
 
 
 
-        # if (batch_index+1) % 50 == 0:    # every 20 mini-batches...
-                if counter % 50 == 0:
+
+                if counter % 25 == 0:
                     with torch.no_grad():
                         valid_loss = 0
                         total_acc_x = 0
@@ -145,6 +145,7 @@ def train():
 
 
                             loss = criterion(outputs, labels)
+                            valid_loss += loss.item()
 
                             outputs = outputs.cpu().detach().numpy()
                             labels = labels.cpu().detach().numpy()
@@ -172,8 +173,10 @@ def train():
                         print("Euclidean Distance: {}".format(np.mean(distances)))
                         print("=" * 30)
                     
-                        if np.mean(distances) < max_euclidean_distance:
-                            max_euclidean_distance = np.mean(distances)
+                        # if np.mean(distances) < max_euclidean_distance:
+                            # max_euclidean_distance = np.mean(distances)
+                        if valid_loss < min_loss:
+                            min_loss = valid_loss
                             torch.save(model.state_dict(), saved_weight_dir)
                             print('model saved to ' + saved_weight_dir)
                             torch.save(model2.state_dict(), saved_weight_dir2)

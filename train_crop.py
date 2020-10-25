@@ -27,8 +27,8 @@ invalid_batch_size = batch_size
 
 # train_csv = './csv/200_1.csv'
 # dir_weight = 'check_points/weights_crop_200_1.pth'
-name = '7000'
-directory = ''
+name = '15d'
+directory = '15d'
 train_csv = 'csv/' + directory + '/' + name + '.csv'
 dir_weight = 'check_points/weights_crop_' + name + '.pth'
 

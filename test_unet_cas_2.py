@@ -16,24 +16,25 @@ from tqdm import tqdm
 
 
 def my_eval():
-    name = '10b_10'
-    name = '7000_3'
     ########################################    Transformed Dataset
 
     # file_to_read = './csv/all/all.csv'
     # file_to_write = "./csv/all/pred_all.csv"
 
+    # name = '7000_3'
+    name = '10d_8'
+
     file_to_read = './csv/all/88231.csv'
     file_to_write = "./csv/all/pred/pred_88231_" + name + ".csv"
 
-    file_to_read = './csv/test_927.csv'
-    file_to_write = './csv/test_927_pred.csv'
+    # file_to_write = './csv/test_927_pred.csv'
+    # file_to_read = './csv/test_927.csv'
 
 
     saved_weights = './check_points/weights_' + name + '_1.pth'
     saved_weights2 = './check_points/weights_' + name + '_2.pth'
 
-    batch_size = 40
+    batch_size = 65
 
     dataset = WeldingDatasetToTensor(csv_file=file_to_read, data_root='all_images')
 

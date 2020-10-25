@@ -22,6 +22,7 @@ def mean_dist(l1, l2):
     return np.mean(np.sum((l1 - l2) ** 2, axis=1) ** 0.5)
 
 name = '7000_2'
+name = '15d_7'
 file_cutout = 'csv/eval/eval_cutout_' + name + '.csv'
 file_crop = 'csv/eval/eval_crop_' + name + '.csv'
 file_output = 'csv/eval/evaluation_all.csv'
@@ -44,7 +45,7 @@ threshold_cutout = 1
 threshold_crop = 0
 # threshold_cutout = 0.45825
 threshold_cutout = 0.1
-threshold_crop = 0.99
+threshold_crop = 0.9
 
 mask_1 = lst_cutout[:,5].astype(float) <= threshold_cutout
 mask_2 = lst_crop[:, 5].astype(float) >= threshold_crop
