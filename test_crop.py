@@ -18,17 +18,18 @@ from pdb import set_trace
 
 #Test on predictions
 def eval_prediction():
-    batch_size = 200
-    semi = '_8'
-    train_gen = '10d' + semi
-    train_dis = '15d'
+    batch_size = 240
+    num_workers = 12
 
-    file_to_read = './csv/all/pred/pred_88231_' + train_gen + '.csv'
-    file_to_write = './csv/eval/eval_crop_' + train_dis + '' + semi + '.csv'
-    dir_weight = 'check_points/weights_crop_' + train_dis + '.pth'
+    name = '10b_10'
+    name_weights = '15b'
+
+    file_to_read = './csv/all/pred/pred_88231_' + name + '.csv'
+    file_to_write = './csv/eval/eval_crop_' + name + '.csv'
+    dir_weight = 'check_points/weights_crop_' + name_weights + '.pth'
 
     dataset = CropDataset_pred(csv_file=file_to_read)
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
     discriminator = Discriminator().cuda()
     discriminator.load_state_dict(torch.load(dir_weight))
     discriminator.eval()
@@ -40,8 +41,8 @@ def eval_prediction():
         all_preds = []
         all_names = []
         pbar = tqdm(total=len(dataloader))
-        # positive = 0
-        # total = 0
+        # positive = 1
+        # total = 1
         for i, batch_data in enumerate(dataloader):
             # print('{}/{}'.format(i, len(dataloader)))
             image_crop = batch_data['image_crop'].cuda()
@@ -52,10 +53,10 @@ def eval_prediction():
             logits = discriminator(image_crop)
             for l in logits:
                 all_logits.append(l.flatten().cpu().detach().item())
-            # threshold = 0.0005
+            # threshold = 1.1115
             # positive += (logits<threshold).sum().item()
             # total += b_size
-            # results = [0 if l.item()<threshold else 1 for l in logits]
+            # results = [1 if l.item()<threshold else 1 for l in logits]
             # predictions.extend(results)
             all_labels.extend(coor_label.numpy())
             all_preds.extend(coor_pred.numpy())

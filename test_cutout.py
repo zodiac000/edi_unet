@@ -23,17 +23,18 @@ import matplotlib
 
 #Test on predictions
 def eval_prediction():
-    batch_size = 180
-    semi = '_8'
-    train_gen = '10d' + semi
-    train_dis = '15d' 
-    
-    file_to_read = './csv/all/pred/pred_88231_' + train_gen + '.csv'
-    file_to_write = './csv/eval/eval_cutout_' + train_dis + '' + semi + '.csv'
-    dir_weight = 'check_points/weights_cutout_' + train_dis + '.pth'
+    batch_size = 240
+    num_workers = 12
+
+    name = '10b_9'
+    name_weights = '15b'
+    file_to_read = './csv/all/pred/pred_88231_' + name + '.csv'
+    file_to_write = './csv/eval/eval_cutout_' + name + '.csv'
+    dir_weight = 'check_points/weights_cutout_' + name_weights + '.pth'
+
 
     dataset = CutoutDataset_pred(csv_file=file_to_read)
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
     discriminator = Discriminator().cuda()
     discriminator.load_state_dict(torch.load(dir_weight))
     discriminator.eval()

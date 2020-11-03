@@ -21,15 +21,15 @@ Number of Total Predictions: {}
 def mean_dist(l1, l2):
     return np.mean(np.sum((l1 - l2) ** 2, axis=1) ** 0.5)
 
-name = '7000_2'
-name = '15d_7'
+name = '10b_9'
+# name = '15b'
 file_cutout = 'csv/eval/eval_cutout_' + name + '.csv'
 file_crop = 'csv/eval/eval_crop_' + name + '.csv'
 file_output = 'csv/eval/evaluation_all.csv'
 
-# file_cutout = 'csv/eval/super_200/eval_cutout_927.csv'
-# file_crop = 'csv/eval/super_200/eval_crop_927.csv'
-# file_output = 'csv/eval/super_200/evaluation_927.csv'
+# file_cutout = 'csv/eval/super_211/eval_cutout_927.csv'
+# file_crop = 'csv/eval/super_211/eval_crop_927.csv'
+# file_output = 'csv/eval/super_211/evaluation_927.csv'
 
 with open(file_cutout, 'r') as f:
     lines = f.readlines()
@@ -42,9 +42,10 @@ with open(file_crop, 'r') as f:
 total = len(lst_cutout)
 
 threshold_cutout = 1
-threshold_crop = 0
-# threshold_cutout = 0.45825
-threshold_cutout = 0.1
+threshold_crop = 1
+threshold_cutout = 0.45826
+# threshold_cutout = 0.4
+# threshold_cutout = 0.4
 threshold_crop = 0.9
 
 mask_1 = lst_cutout[:,5].astype(float) <= threshold_cutout
@@ -68,10 +69,10 @@ print(len(valid))
 
 # label = valid[:, 1:3].astype(int)
 # pred = valid[:, 3:5].astype(int)
-# dist = np.sum((label - pred) ** 2, axis=1) ** 0.5
+# dist = np.sum((label - pred) ** 2, axis=1) ** 1.5
 # mean_dist = mean_dist(label, pred)
 
-# plt.hist(dist, bins=10)
+# plt.hist(dist, bins=11)
 # # plt.title(titleTxt.format(threshold_cutout, threshold_crop, mean_dist, len(valid), total))
 # plt.xlabel('Euclidean distance')
 # plt.ylabel('Count')
@@ -79,7 +80,7 @@ print(len(valid))
 # plt.show()
 
 ################################################################################################
-# names = valid[:, 0]
+# names = valid[:, 1]
 # x = valid[:, 1].astype(int)
 # y = valid[:, 2].astype(int)
 # x_pred = valid[:, 3].astype(int)

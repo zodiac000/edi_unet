@@ -14,32 +14,40 @@ import matplotlib.pyplot as plt
 from utils import heatmap_to_coor, accuracy_sum, get_crop_hmap
 from tqdm import tqdm
 
+import time
+from datetime import datetime
+
 
 def my_eval():
+    now = datetime.now().strftime("%m-%d-------%H:%M:%S")
     ########################################    Transformed Dataset
+    name = '10a_10'
+    num_workers = 12
+    batch_size = 60
+    
+    test_all = False
 
-    # file_to_read = './csv/all/all.csv'
-    # file_to_write = "./csv/all/pred_all.csv"
+    if test_all:
+        file_to_read = './csv/all/88231.csv'
+        file_to_write = "./csv/all/pred/pred_88231_" + name + ".csv"
+    else:
+        file_to_write = './csv/test_927_pred.csv'
+        file_to_read = './csv/test_927.csv'
 
-    # name = '7000_3'
-    name = '10d_8'
-
-    file_to_read = './csv/all/88231.csv'
-    file_to_write = "./csv/all/pred/pred_88231_" + name + ".csv"
-
-    # file_to_write = './csv/test_927_pred.csv'
-    # file_to_read = './csv/test_927.csv'
-
+    # file_to_write = './csv/15c/5c_valid.csv'
+    # file_to_read = './csv/15c/5c.csv'
 
     saved_weights = './check_points/weights_' + name + '_1.pth'
     saved_weights2 = './check_points/weights_' + name + '_2.pth'
 
-    batch_size = 65
+
+    test_result_file = './result.csv'
+
 
     dataset = WeldingDatasetToTensor(csv_file=file_to_read, data_root='all_images')
 
 
-    valid_loader = DataLoader(dataset, batch_size=batch_size, num_workers=4, shuffle=False)
+    valid_loader = DataLoader(dataset, batch_size=batch_size, num_workers=num_workers, shuffle=False)
 
     model = UNet().cuda()
     model.load_state_dict(torch.load(saved_weights))
@@ -50,8 +58,9 @@ def my_eval():
 
     # model.eval()
     valid_loss = 0
-    f = open(file_to_write, "w")
+    f = open(file_to_write, "w+")
     pbar = tqdm(total=len(valid_loader.dataset))
+    start = time.time()
     with torch.no_grad():
         distances = []
         accuracy = []
@@ -108,18 +117,39 @@ def my_eval():
         e_distances = np.asarray(distances)
         accuracy = np.asarray(accuracy)
         accuracy = np.mean(accuracy, axis=0)
-
+        
+        distance = np.mean(e_distances)
         
 
         print("=" * 30)
-        print("mean acc_x = {:.10f}".format(accuracy[0]))
-        print("mean acc_y = {:.10f}".format(accuracy[1]))
-        print("Euclidean Distance: {}".format(np.mean(e_distances)))
+        print("mean acc_x = {:.11f}".format(accuracy[0]))
+        print("mean acc_y = {:.11f}".format(accuracy[1]))
+        print("Euclidean Distance: {}".format(distance))
         print("=" * 30)
 
         f.close()
         valid_loss = valid_loss / len(valid_loader.dataset)
         print('valid loss {}'.format(valid_loss))
+        print(name)
+
+    end = time.time()
+    diff = end - start
+    duration_minute = int(diff/60)
+    duration_second = int(diff%60)
+    if not test_all:
+        with open(test_result_file, 'a') as f:
+            f.write(name  
+                    + "\t"
+                    + now 
+                    + "\t" 
+                    + str(duration_minute) 
+                    + ":"
+                    + str(duration_second) 
+                    + "\tD: "
+                    + str(distance.item())
+                    + "\tL: "
+                    + str(valid_loss.item())
+                    + "\n")
 
 if __name__ == "__main__":
     my_eval()

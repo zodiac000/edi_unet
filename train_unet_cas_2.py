@@ -19,15 +19,15 @@ from test_unet import my_eval
 
 from pdb import set_trace
 
-num_epochs = 30000
-num_epochs = 4
-batch_size = 24
-lr = 1e-4
+batch_size = 20
 
-train = '10d_7'
-valid = '5d'
+num_epochs = 20
+lr = 1e-2
+num_workers = 12
 
-directory = '15d'
+train = '10b_10'
+valid = '5b'
+directory = '15b'
 
 train_csv = './csv/' + directory + '/' + train + '.csv'
 saved_weight_dir = './check_points/weights_' + train + '_1.pth'
@@ -41,18 +41,20 @@ model2 = UNet().cuda()
 labeled_dataset = WeldingDatasetToTensor(data_root='all_images', csv_file=train_csv, root_dir='./')
 val_dataset = WeldingDatasetToTensor(data_root='all_images', csv_file=validation_csv, root_dir='./')
 
-train_loader = DataLoader(labeled_dataset, batch_size=batch_size, num_workers=4, shuffle=True)
-valid_loader = DataLoader(val_dataset, batch_size=40, num_workers=4, shuffle=False)
+train_loader = DataLoader(labeled_dataset, batch_size=batch_size, num_workers=num_workers, shuffle=True)
+valid_loader = DataLoader(val_dataset, batch_size=60, num_workers=8, shuffle=False)
 
 criterion = nn.MSELoss().cuda()
 criterion2 = nn.MSELoss().cuda()
 optimizer = torch.optim.Adam(model.parameters(), lr=lr)
 optimizer2 = torch.optim.Adam(model2.parameters(), lr=lr)
+# optimizer = torch.optim.SGD(model.parameters(), lr=lr, momentum=0.9)
+# optimizer2 = torch.optim.SGD(model2.parameters(), lr=lr, momentum=0.9)
 def train():
     max_total_acc_x = 0
     max_euclidean_distance = 99999
     min_loss = 99999
-    counter = 0
+    batch_counter = 0
     for epoch in range(num_epochs):
         for batch_index, sample_batched in enumerate(train_loader):
 
@@ -90,10 +92,10 @@ def train():
             loss.backward()
             optimizer2.step()
 
-            counter += 1
-            if (counter) % 5 == 0:    # every 20 mini-batches...
-                print('Train counter/epoch: {}/{}\tLoss: {:.30f}'.format(
-                        counter,
+            batch_counter += 1
+            if (batch_counter) % 5 == 0:    # every 20 mini-batches...
+                print('Train batch_counter/epoch: {}/{}\tLoss: {:.30f}'.format(
+                        batch_counter,
                         epoch,
                         torch.mean(loss).item())) #/ len(inputs)))
 
@@ -108,7 +110,7 @@ def train():
 
 
 
-                if counter % 25 == 0:
+                if batch_counter % 25 == 0:
                     with torch.no_grad():
                         valid_loss = 0
                         total_acc_x = 0
@@ -168,8 +170,8 @@ def train():
 
 
                         print("=" * 30)
-                        print("total acc_x = {:.10f}".format(total_acc_x/len(valid_loader.dataset)))
-                        print("total acc_y = {:.10f}".format(total_acc_y/len(valid_loader.dataset)))
+                        print("total acc_x = {:.20f}".format(total_acc_x/len(valid_loader.dataset)))
+                        print("total acc_y = {:.20f}".format(total_acc_y/len(valid_loader.dataset)))
                         print("Euclidean Distance: {}".format(np.mean(distances)))
                         print("=" * 30)
                     
